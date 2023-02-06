@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A fully-functioning e-commerce application REST API that allows users to perform various CRUD operations.",
   "main": "app.js",
+  "licence": "MIT",
   "dependencies": {
     "express": "^4.18.2"
   },
