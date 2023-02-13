@@ -27,6 +27,8 @@ app.post(`${api}/products`, (req, res) => {
     res.send(newProduct)
 });
 
+mongoose.connect('mongodb+srv://mongo:mongo@cluster0.ct6t2fu.mongodb.net/?retryWrites=true&w=majority')
+
 app.listen(port, () => {
     console.log(`Expresso ☕ is on Port ${ port } Ctrl + C to Stop `); 
 });
