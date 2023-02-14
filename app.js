@@ -12,6 +12,12 @@ const api = process.env.API_URL
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 
+const productSchema = mongoose.Schema({
+    name: String,
+    image: String,
+    countInStock: Number
+})
+
 app.get(`${api}/products`, (req, res) => {
     const product = {
         id: 1,
@@ -27,7 +33,15 @@ app.post(`${api}/products`, (req, res) => {
     res.send(newProduct)
 });
 
-mongoose.connect('mongodb+srv://mongo:mongo@cluster0.ct6t2fu.mongodb.net/?retryWrites=true&w=majority')
+mongoose.set('strictQuery', false);
+
+mongoose.connect(process.env.CONNECTION_STRING)
+.then(() => {
+    console.log('Database connection is ready...')
+})
+.catch((err) => {
+    console.log(err)
+});
 
 app.listen(port, () => {
     console.log(`Expresso ☕ is on Port ${ port } Ctrl + C to Stop `); 
