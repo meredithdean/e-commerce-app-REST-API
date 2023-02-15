@@ -5,47 +5,31 @@ require('dotenv/config');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
-const api = process.env.API_URL
+
 
 // middleware
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
+app.use(cors());
+app.options('*', cors());
 
-const productSchema = mongoose.Schema({
-    name: String,
-    image: String,
-    countInStock: Number
-});
+// routers
+const categoriesRouter = require('./routers/categories');
+const productsRouter = require('./routers/products');
+const ordersRouter = require('./routers/orders');
+const usersRouter = require('./routers/users');
 
-const Product = mongoose.model('Product', productSchema);
+const api = process.env.API_URL
 
-app.get(`${api}/products`, async (req, res) => {
-    const productList = await Product.find()
-    if(!productList) {
-        res.status(500).json({success: false})
-    }
-    res.send(productList)
-});
+app.use(`${api}/categories`, categoriesRouter);
+app.use(`${api}/products`, productsRouter);
+app.use(`${api}/orders`, ordersRouter);
+app.use(`${api}/users`, usersRouter);
 
-app.post(`${api}/products`, (req, res) => {
-    const product = new Product({
-        name: req.body.name,
-        image: req.body.image,
-        countInStock: req.body.countInStock
-    })
 
-    product.save().then((createdProduct) => {
-        res.status(201).json(createdProduct)
-    }).catch((err) => {
-        res.status(500).json({
-            error: err,
-            success: false
-        })
-    })
-    
-});
-
+// database connection
 mongoose.set('strictQuery', false);
 
 mongoose.connect(process.env.CONNECTION_STRING)
@@ -56,6 +40,7 @@ mongoose.connect(process.env.CONNECTION_STRING)
     console.log(err)
 });
 
+// server
 app.listen(port, () => {
     console.log(`Expresso ☕ is on Port ${ port } Ctrl + C to Stop `); 
 });
