@@ -4,6 +4,8 @@ const port = process.env.PORT || 3000
 require('dotenv/config');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const authJwt = require('./helpers/jwt');
+const errorHandler =  require('./helpers/error-handler');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
@@ -14,6 +16,8 @@ app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(cors());
 app.options('*', cors());
+app.use(authJwt());
+app.use(errorHandler);
 
 // routers
 const categoriesRouter = require('./routers/categories');
